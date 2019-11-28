@@ -1,19 +1,24 @@
-use actix_web::{post, App, Error, HttpRequest, HttpResponse, HttpServer, Responder,};
+use actix_web::{post, web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder,};
 use listenfd::ListenFd;
-use serde::Serialize;
+
 use serde_json;
 
 use std::env;
 
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-struct StartConfig {
-  color: &'static str,
-  head_type: &'static str,
-  tail_type: &'static str,
-}
+mod battle_snake_structs;
 
-impl Responder for StartConfig {
+impl Responder for battle_snake_structs::StartResponse {
+  type Error = Error;
+  type Future = Result<HttpResponse, Error>;
+
+  fn respond_to(self, _req: &HttpRequest) -> Self::Future {
+    let body = serde_json::to_string(&self)?;
+    Ok(HttpResponse::Ok()
+      .content_type("application/json")
+      .body(body))
+  }
+}
+impl Responder for battle_snake_structs::MoveResponse {
   type Error = Error;
   type Future = Result<HttpResponse, Error>;
 
@@ -28,24 +33,27 @@ impl Responder for StartConfig {
 #[post("/start")]
 fn handler_start() -> impl Responder {
   println!("POST /start");
-  let start_obj = StartConfig {
-    color: "user",
-    head_type: "safe",
-    tail_type: "small-rattle",
-  };
+  let start_obj = battle_snake_structs::StartResponse::new(
+    "#ea5b0c".to_string(),
+    "safe".to_string(),
+    "small-rattle".to_string(),
+  );
   return start_obj;
 }
 
 #[post("/move")]
-fn handler_move() -> impl Responder {
+fn handler_move(request_body: web::Json<battle_snake_structs::GameEnvironment>) -> impl Responder {
   println!("POST /move");
-  HttpResponse::Ok().body("Hello world!");
+  println!("{}", request_body.turn);
+
+  let move_obj = battle_snake_structs::MoveResponse::new(battle_snake_structs::Move::Left);
+  return move_obj;
 }
 
 #[post("/end")]
 fn handler_end() -> impl Responder {
   println!("POST /end");
-  HttpResponse::Ok().body("Hello world!");
+  HttpResponse::Ok();
 }
 
 #[post("/ping")]
