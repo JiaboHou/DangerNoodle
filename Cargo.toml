@@ -1,5 +1,5 @@
 [package]
-name = "DangerNoodle"
+name = "danger_noodle"
 version = "0.1.0"
 authors = ["Jiabo Hou <jiabo.hou@vidyard.com>"]
 edition = "2018"

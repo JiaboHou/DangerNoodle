@@ -1,2 +1,2 @@
-# DangerNoodle
+# danger_noodle
 Battlesnake
