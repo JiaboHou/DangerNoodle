@@ -3,6 +3,8 @@ use listenfd::ListenFd;
 use serde::Serialize;
 use serde_json;
 
+use std::env;
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct StartConfig {
@@ -52,7 +54,9 @@ fn handler_ping() -> impl Responder {
   HttpResponse::Ok();
 }
 
-
+fn get_server_port() -> u16 {
+  env::var("PORT").ok().and_then(|p| p.parse().ok()).unwrap_or(3000)
+}
 
 fn main() {
   println!("Hello, world!");
@@ -69,7 +73,7 @@ fn main() {
   server = if let Some(l) = listenfd.take_tcp_listener(0).unwrap() {
     server.listen(l).unwrap()
   } else {
-    server.bind("127.0.0.1:3000").unwrap()
+    server.bind(("0.0.0.0", get_server_port())).unwrap()
   };
 
   server.run().unwrap();
