@@ -32,7 +32,9 @@ pub fn is_occupied(snakes: &Vec<Snake>, location: &BodyPart) -> bool {
 }
 
 pub fn is_out_of_bounds(width: &i8, height: &i8, location: &BodyPart) -> bool {
-  location.x < 0 || location.x >= *width || location.y < 0 || location.y >= *height
+  let out_of_bounds = location.x < 0 || location.x >= *width || location.y < 0 || location.y >= *height;
+  println!("out of bounds {}", out_of_bounds);
+  return out_of_bounds;
 }
 
 pub fn is_valid_move(data: &GameEnvironment, movement: &Move) -> bool {
@@ -46,10 +48,12 @@ pub fn is_valid_move(data: &GameEnvironment, movement: &Move) -> bool {
   };
 
   println!("is_valid_move: x: {}, y: {}", new_position.x, new_position.y);
+  let out_of_bounds: bool = is_out_of_bounds(&data.board.width, &data.board.height, &new_position);
+  if out_of_bounds {
+    return !out_of_bounds;
+  }
 
-  let occupied: bool = !is_occupied(&data.board.snakes, &new_position);
-  let out_of_bounds: bool = !is_out_of_bounds(&data.board.width, &data.board.height, &new_position);
-  return !occupied && !out_of_bounds;
+  return !is_occupied(&data.board.snakes, &new_position);
 }
 
 pub fn random_v0(data: GameEnvironment) -> Move {
