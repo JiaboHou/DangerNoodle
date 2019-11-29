@@ -12,7 +12,7 @@ static possible_moves: [Move; 4] = [Move::Left, Move::Right, Move::Up, Move::Dow
 
 // }
 
-pub fn is_occupied(snakes: &Vec<Snake>, location: BodyPart) -> bool {
+pub fn is_occupied(snakes: &Vec<Snake>, location: &BodyPart) -> bool {
   let mut occupied: bool = false;
   for snake in snakes.iter() {
     for body_part in snake.body.iter() {
@@ -31,6 +31,10 @@ pub fn is_occupied(snakes: &Vec<Snake>, location: BodyPart) -> bool {
   return false;
 }
 
+pub fn is_out_of_bounds(width: &i8, height: &i8, location: &BodyPart) -> bool {
+  location.x < 0 || location.x >= *width || location.y < 0 || location.y >= *height
+}
+
 pub fn is_valid_move(data: &GameEnvironment, movement: &Move) -> bool {
   let head_position = &data.you.body[0];
 
@@ -43,7 +47,9 @@ pub fn is_valid_move(data: &GameEnvironment, movement: &Move) -> bool {
 
   println!("is_valid_move: x: {}, y: {}", new_position.x, new_position.y);
 
-  return !is_occupied(&data.board.snakes, new_position);
+  let occupied: bool = !is_occupied(&data.board.snakes, &new_position);
+  let out_of_bounds: bool = !is_out_of_bounds(&data.board.width, &data.board.height, &new_position);
+  return !occupied && !out_of_bounds;
 }
 
 pub fn random_v0(data: GameEnvironment) -> Move {

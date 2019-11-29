@@ -60,8 +60,8 @@ pub struct Food {
 
 #[derive(Deserialize, Debug)]
 pub struct BodyPart{
-  pub x: u8,
-  pub y: u8,
+  pub x: i8,
+  pub y: i8,
 }
 
 #[derive(Deserialize, Debug)]
@@ -74,8 +74,8 @@ pub struct Snake {
 
 #[derive(Deserialize, Debug)]
 pub struct Board {
-  pub height: u8,
-  pub width: u8,
+  pub height: i8,
+  pub width: i8,
   pub food: Vec<Food>,
   pub snakes: Vec<Snake>,
 }
