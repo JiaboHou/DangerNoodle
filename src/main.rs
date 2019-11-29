@@ -1,13 +1,12 @@
 use actix_web::{post, web, App, Error, HttpRequest, HttpResponse, HttpServer, Responder,};
 use listenfd::ListenFd;
-
 use serde_json;
 
 use std::env;
 
-mod battle_snake_structs;
+mod battle_snake;
 
-impl Responder for battle_snake_structs::StartResponse {
+impl Responder for battle_snake::structs::StartResponse {
   type Error = Error;
   type Future = Result<HttpResponse, Error>;
 
@@ -18,12 +17,13 @@ impl Responder for battle_snake_structs::StartResponse {
       .body(body))
   }
 }
-impl Responder for battle_snake_structs::MoveResponse {
+impl Responder for battle_snake::structs::MoveResponse {
   type Error = Error;
   type Future = Result<HttpResponse, Error>;
 
   fn respond_to(self, _req: &HttpRequest) -> Self::Future {
     let body = serde_json::to_string(&self)?;
+    println!("response is {}", body);
     Ok(HttpResponse::Ok()
       .content_type("application/json")
       .body(body))
@@ -33,7 +33,7 @@ impl Responder for battle_snake_structs::MoveResponse {
 #[post("/start")]
 fn handler_start() -> impl Responder {
   println!("POST /start");
-  let start_obj = battle_snake_structs::StartResponse::new(
+  let start_obj = battle_snake::structs::StartResponse::new(
     "#ea5b0c".to_string(),
     "safe".to_string(),
     "small-rattle".to_string(),
@@ -42,12 +42,13 @@ fn handler_start() -> impl Responder {
 }
 
 #[post("/move")]
-fn handler_move(request_body: web::Json<battle_snake_structs::GameEnvironment>) -> impl Responder {
+fn handler_move(request_body: web::Json<battle_snake::structs::GameEnvironment>) -> impl Responder {
   println!("POST /move");
-  println!("{}", request_body.turn);
+  println!("request body: {:?}", &request_body);
 
-  let move_obj = battle_snake_structs::MoveResponse::new(battle_snake_structs::Move::Left);
-  return move_obj;
+  let movement: battle_snake::structs::Move = battle_snake::strategies::random_v0(request_body.0);
+
+  battle_snake::structs::MoveResponse::new(movement)
 }
 
 #[post("/end")]
