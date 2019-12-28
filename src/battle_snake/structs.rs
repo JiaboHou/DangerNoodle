@@ -18,7 +18,7 @@ impl StartResponse {
   }
 }
 
-#[derive(Clone, Copy, Serialize)]
+#[derive(Clone, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Move {
   Left,
@@ -46,22 +46,10 @@ pub struct Game {
   id: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct Point {
   pub x: u8,
   pub y: u8,
-}
-
-#[derive(Deserialize, Debug)]
-pub struct Food {
-  pub x: u8,
-  pub y: u8,
-}
-
-#[derive(Deserialize, Debug)]
-pub struct BodyPart{
-  pub x: i8,
-  pub y: i8,
 }
 
 #[derive(Deserialize, Debug)]
@@ -69,14 +57,14 @@ pub struct Snake {
   pub id: String,
   pub name: String,
   pub health: u8,
-  pub body: Vec<BodyPart>,
+  pub body: Vec<Point>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Board {
-  pub height: i8,
-  pub width: i8,
-  pub food: Vec<Food>,
+  pub height: u8,
+  pub width: u8,
+  pub food: Vec<Point>,
   pub snakes: Vec<Snake>,
 }
 
