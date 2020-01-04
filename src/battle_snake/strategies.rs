@@ -1,6 +1,7 @@
 use rand::Rng;
 
-use crate::battle_snake::structs::{ Point, GameEnvironment, Move, Snake };
+use crate::battle_snake::structs::{Point, GameEnvironment, Move, Snake};
+use crate::battle_snake::map::{generate_map};
 
 static POSSIBLE_MOVES: [Move; 4] = [Move::Left, Move::Right, Move::Up, Move::Down];
 
@@ -72,6 +73,8 @@ pub fn random_v0(data: GameEnvironment) -> Move {
 
 pub fn random_v1(data: GameEnvironment) -> Move {
   // 1. Generate grid
+  let map = generate_map(&data);
+  println!("{}", map);
 
   // 2. Cull invalid moves
 
