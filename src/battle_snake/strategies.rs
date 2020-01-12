@@ -1,9 +1,7 @@
 use rand::Rng;
 
-use crate::battle_snake::structs::{Point, GameEnvironment, Move, Snake};
-use crate::battle_snake::map::{generate_map};
-
-static POSSIBLE_MOVES: [Move; 4] = [Move::Left, Move::Right, Move::Up, Move::Down];
+use crate::battle_snake::structs::{POSSIBLE_MOVES, Point, GameEnvironment, Move, Snake};
+use crate::battle_snake::map::{generate_map, get_valid_moves};
 
 pub fn is_occupied(snakes: &Vec<Snake>, location: &Point) -> bool {
   for snake in snakes.iter() {
@@ -57,6 +55,7 @@ pub fn is_valid_move(data: &GameEnvironment, movement: &Move) -> bool {
 
 // Randomly move in any direction that is not occupied by a snake
 // including yourself, and walls
+#[allow(dead_code)]
 pub fn random_v0(data: GameEnvironment) -> Move {
   println!("calculating valid moves");
   let valid_moves: Vec<&Move> = POSSIBLE_MOVES
@@ -71,14 +70,17 @@ pub fn random_v0(data: GameEnvironment) -> Move {
   return valid_moves[movement_number].clone();
 }
 
+#[allow(dead_code)]
 pub fn random_v1(data: GameEnvironment) -> Move {
   // 1. Generate grid
   let map = generate_map(&data);
   println!("{}", map);
 
   // 2. Cull invalid moves
+  let valid_moves = get_valid_moves(&map, &data.you);
 
-  // 3. Score move
+  // 3. Randomly choose between valid moves
+  let movement_number: usize = rand::thread_rng().gen_range(0, valid_moves.len());
 
-  return Move::Left;
+  return valid_moves[movement_number].clone();
 }
