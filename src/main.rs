@@ -46,7 +46,8 @@ fn handler_move(request_body: web::Json<battle_snake::structs::GameEnvironment>)
   println!("POST /move");
   println!("request body: {:?}", &request_body);
 
-  let movement: battle_snake::structs::Move = battle_snake::strategies::random_v0(request_body.0);
+  // let movement: battle_snake::structs::Move = battle_snake::strategies::random_v0(request_body.0);
+  let movement: battle_snake::structs::Move = battle_snake::strategies::random_v1(request_body.0);
 
   battle_snake::structs::MoveResponse::new(movement)
 }

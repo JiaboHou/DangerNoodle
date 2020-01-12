@@ -75,3 +75,5 @@ pub struct GameEnvironment {
   pub board: Board,
   pub you: Snake,
 }
+
+pub static POSSIBLE_MOVES: [Move; 4] = [Move::Left, Move::Right, Move::Up, Move::Down];
