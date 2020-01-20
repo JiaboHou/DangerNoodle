@@ -19,12 +19,12 @@ pub struct Space {
 
 #[allow(dead_code)]
 pub struct Map<'a> {
-  grid: Vec<Option<Space>>,
-  height: u8,
-  width: u8,
+  pub grid: Vec<Option<Space>>,
+  pub height: u8,
+  pub width: u8,
+  pub you: String,
+  pub snakes: HashMap<String, &'a Snake>,
   // food: Vec<Point>,
-  you: String,
-  snakes: HashMap<String, &'a Snake>,
 }
 
 impl<'a> fmt::Display for Map<'a> {
@@ -128,5 +128,21 @@ pub fn get_valid_moves(map: &Map, snake: &Snake) -> Vec<&'static Move> {
   POSSIBLE_MOVES
     .iter()
     .filter(|m| is_valid_move(map, &snake.body[0], *m))
+    .collect()
+}
+
+pub fn move_toward<'a>(src: &Point, dest: &Point, possible_moves: &'a Vec<&'a Move>) -> Vec<&'a&'a Move> {
+  let dir_vector = ((dest.x - src.x) as i8, (dest.y - src.y) as i8);
+
+  possible_moves
+    .iter()
+    .filter(|m| {
+      match *m {
+        Move::Left => dir_vector.0 < 0,
+        Move::Right => dir_vector.0 > 0,
+        Move::Up => dir_vector.1 < 0,
+        Move::Down => dir_vector.1 > 0,
+      }
+    })
     .collect()
 }

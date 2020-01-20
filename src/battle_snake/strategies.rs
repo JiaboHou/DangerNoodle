@@ -1,7 +1,7 @@
 use rand::Rng;
 
 use crate::battle_snake::structs::{POSSIBLE_MOVES, Point, GameEnvironment, Move, Snake};
-use crate::battle_snake::map::{generate_map, get_valid_moves};
+use crate::battle_snake::map::{generate_map, get_valid_moves, move_toward};
 
 pub fn is_occupied(snakes: &Vec<Snake>, location: &Point) -> bool {
   for snake in snakes.iter() {
@@ -74,7 +74,6 @@ pub fn random_v0(data: GameEnvironment) -> Move {
 pub fn random_v1(data: GameEnvironment) -> Move {
   // 1. Generate grid
   let map = generate_map(&data);
-  println!("{}", map);
 
   // 2. Cull invalid moves
   let valid_moves = get_valid_moves(&map, &data.you);
@@ -84,3 +83,25 @@ pub fn random_v1(data: GameEnvironment) -> Move {
 
   return valid_moves[movement_number].clone();
 }
+
+#[allow(dead_code)]
+pub fn chase_tail(data: GameEnvironment) -> Move {
+  // 1. Generate grid
+  let map = generate_map(&data);
+
+  // 2. Cull invalid moves
+  let valid_moves = get_valid_moves(&map, &data.you);
+
+  // 3. Choose move that goes toward your own tail
+  let my_body = &map.snakes[&map.you].body;
+  let my_head = my_body[0].clone();
+  let my_tail = my_body[my_body.len()].clone();
+  let tail_moves = move_toward(&my_head, &my_tail, &valid_moves);
+
+  // 4. Randomly choose between moves that chase your own tail
+  let movement_number: usize = rand::thread_rng().gen_range(0, tail_moves.len());
+
+  return valid_moves[movement_number].clone();
+}
+
+// TODO: evaluate moves on a lifetime count basis?

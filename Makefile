@@ -12,3 +12,9 @@ watch:
 
 release:
 	cargo build --release
+
+heroku_setup:
+	heroku git:remote jh-danger-noodle
+
+heroku_release:
+	git push heroku master
