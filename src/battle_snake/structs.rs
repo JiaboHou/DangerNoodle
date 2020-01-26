@@ -18,7 +18,7 @@ impl StartResponse {
   }
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Move {
   Left,

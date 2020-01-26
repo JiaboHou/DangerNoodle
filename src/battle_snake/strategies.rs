@@ -92,11 +92,14 @@ pub fn chase_tail(data: GameEnvironment) -> Move {
   // 2. Cull invalid moves
   let valid_moves = get_valid_moves(&map, &data.you);
 
+  println!("Valid Moves: {:?}", valid_moves);
+
   // 3. Choose move that goes toward your own tail
   let my_body = &map.snakes[&map.you].body;
   let my_head = my_body[0].clone();
-  let my_tail = my_body[my_body.len()].clone();
+  let my_tail = my_body[my_body.len() - 1].clone();
   let tail_moves = move_toward(&my_head, &my_tail, &valid_moves);
+  println!("Tail Moves: {:?}", tail_moves);
 
   // 4. Randomly choose between moves that chase your own tail
   let movement_number: usize = rand::thread_rng().gen_range(0, tail_moves.len());

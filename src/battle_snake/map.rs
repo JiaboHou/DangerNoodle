@@ -132,16 +132,16 @@ pub fn get_valid_moves(map: &Map, snake: &Snake) -> Vec<&'static Move> {
 }
 
 pub fn move_toward<'a>(src: &Point, dest: &Point, possible_moves: &'a Vec<&'a Move>) -> Vec<&'a&'a Move> {
-  let dir_vector = ((dest.x - src.x) as i8, (dest.y - src.y) as i8);
+  let dir_vector = (((dest.x as i8) - src.x as i8), ((dest.y as i8) - src.y as i8));
 
   possible_moves
     .iter()
     .filter(|m| {
       match *m {
-        Move::Left => dir_vector.0 < 0,
-        Move::Right => dir_vector.0 > 0,
-        Move::Up => dir_vector.1 < 0,
-        Move::Down => dir_vector.1 > 0,
+        Move::Left => dir_vector.0 <= 0,
+        Move::Right => dir_vector.0 >= 0,
+        Move::Up => dir_vector.1 <= 0,
+        Move::Down => dir_vector.1 >= 0,
       }
     })
     .collect()
